@@ -14,8 +14,18 @@ namespace FoodWeb.Controllers
         {
             _logger = logger;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
+        {
+            return View();
+        }
+        [Authorize(Roles =("Admin"))]
+        public IActionResult AdminIndex()
+        {
+            return View();
+        }
+        [Authorize(Roles = ("Customer"))]
+        public IActionResult CustomerIndex()
         {
             return View();
         }

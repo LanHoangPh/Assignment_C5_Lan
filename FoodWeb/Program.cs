@@ -37,10 +37,10 @@ namespace FoodWeb
             // Add Identity Remember Me
             builder.Services.ConfigureApplicationCookie(options =>
             {
-                options.ExpireTimeSpan = TimeSpan.FromDays(30); // Cookie lưu 30 ngày nếu chọn Remember Me
-                options.SlidingExpiration = true; // Reset thời gian mỗi lần truy cập
-                options.LoginPath = "/Account/Login"; // Trang đăng nhập
-                options.AccessDeniedPath = "/Account/AccessDenied"; // Trang từ chối truy cập
+                options.ExpireTimeSpan = TimeSpan.FromDays(5); 
+                options.SlidingExpiration = true;
+                options.LoginPath = "/Account/Login"; 
+                options.AccessDeniedPath = "/Account/AccessDenied"; 
             });
 
             var app = builder.Build();
@@ -63,7 +63,7 @@ namespace FoodWeb
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Customer}/{action=Index}/{id?}");
 
             app.Run();
         }

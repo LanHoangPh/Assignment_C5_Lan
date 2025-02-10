@@ -39,8 +39,7 @@ namespace FoodWeb.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                //await _userManager.AddToRoleAsync(user, "Customer"); // Mặc định là khách hàng
-                //await _signInManager.SignInAsync(user, isPersistent: false);
+                await _userManager.AddToRoleAsync(user, "Customer"); // Mặc định là khách hàng
                 return RedirectToAction("Login", "Account");
             }
 
@@ -66,8 +65,6 @@ namespace FoodWeb.Controllers
                 return View(model);
             }
 
-
-            // Find user by email or username
             var user = await _userManager.FindByEmailAsync(model.UserNameOrEmail) ??
                        await _userManager.FindByNameAsync(model.UserNameOrEmail);
 
@@ -83,20 +80,29 @@ namespace FoodWeb.Controllers
                 return View(model);
             }
 
-
-            // Check if the user is locked out
             if (await _userManager.IsLockedOutAsync(user))
             {
                 ModelState.AddModelError(string.Empty, "Tài khoản bị khóa. Vui lòng thử lại sau.");
                 return View(model);
             }
 
-            // Attempt to sign in the user
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
 
-              if (result.Succeeded)
+            if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home"); // Redirect to home page on successful login
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                {
+                    return RedirectToAction("AdminIndex", "Home");
+                }
+                else if (roles.Contains("Customer"))
+                {
+                    return RedirectToAction("CustomerIndex", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("AccessDenied", "Account"); // Nếu role không hợp lệ
+                }
             }
             else if (result.IsLockedOut)
             {
@@ -109,12 +115,23 @@ namespace FoodWeb.Controllers
 
             return View(model);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync(); // Đăng xuất user
             return RedirectToAction("Index", "Home"); // Chuyển hướng về trang chủ
         }
         public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        public IActionResult ChangePassword()
         {
             return View();
         }

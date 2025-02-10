@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Truy cập bị từ chối";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<div class="container text-center mt-5">
+    <h1 class="text-danger">🚫 Truy cập bị từ chối!</h1>
+    <p class="lead">Bạn không có quyền truy cập trang này.</p>
+    
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+        🔙 Quay lại Trang chủ
+    </a>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial.cshtml");
+    }
+}
